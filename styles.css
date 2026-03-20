@@ -1,7 +1,7 @@
 :root {
   --cell-size: 18px;
   --grid-color: #d1d5db;
-  --page-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  --page-shadow: 0 0 10px rgba(0, 0, 0, 0.18);
   --border-strong: 2px solid #333;
   --border-soft: 1px solid #9ca3af;
   --surface: #ffffff;
@@ -12,7 +12,8 @@
   --accent: #2563eb;
   --accent-hover: #1d4ed8;
   --answer: #ef4444;
-  --sidebar-width: 280px;
+  --sidebar-width: 300px;
+  --workspace-gap: 12px;
 }
 
 * {
@@ -22,20 +23,24 @@
 body {
   margin: 0;
   padding: 8px;
+  overflow-x: auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f3f4f6;
   color: var(--text-main);
 }
 
 .workspace {
-  display: grid;
-  grid-template-columns: minmax(0, 210mm) var(--sidebar-width);
-  justify-content: center;
-  align-items: start;
-  gap: 12px;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: var(--workspace-gap);
+  width: max-content;
+  min-width: calc(210mm + var(--sidebar-width) + var(--workspace-gap));
+  margin: 0 auto;
 }
 
 .page {
+  flex: 0 0 210mm;
   width: 210mm;
   min-height: 297mm;
   padding: 2mm;
@@ -46,6 +51,8 @@ body {
 .sidebar {
   position: sticky;
   top: 8px;
+  flex: 0 0 var(--sidebar-width);
+  width: var(--sidebar-width);
 }
 
 .controls-panel {
@@ -74,7 +81,8 @@ body {
   font-size: 16px;
 }
 
-.controls-group {
+.controls-group,
+.task-type-list {
   display: grid;
   gap: 8px;
 }
@@ -104,16 +112,24 @@ body {
   background: var(--accent-hover);
 }
 
-.task-type-list {
-  display: grid;
-  gap: 8px;
-}
-
 .task-filter {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  min-height: 32px;
+  padding: 6px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
   font-size: 14px;
+}
+
+.task-filter input {
+  margin: 0;
+}
+
+.task-filter-marker {
+  display: inline-block;
 }
 
 .worksheet-grid {
@@ -345,10 +361,13 @@ body.show-answers .box::after {
   body {
     padding: 0;
     background: #fff;
+    overflow: visible;
   }
 
   .workspace {
     display: block;
+    min-width: auto;
+    width: auto;
   }
 
   .sidebar {

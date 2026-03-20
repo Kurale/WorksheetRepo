@@ -1,6 +1,6 @@
 import { DAYS, TASK_TYPES, WORKSHEET_CONFIG } from './config.js';
 import { generatorRegistry } from './generators/index.js';
-import { getRandomElement } from './utils/random.js';
+import { getRandomElement, shuffleArray } from './utils/random.js';
 
 /** @typedef {{type: string, answer: string|number, html: string}} TaskDefinition */
 
@@ -11,6 +11,8 @@ class WorksheetApp {
     this.filtersForm = filtersForm;
     this.currentWorksheetData = [];
     this.enabledTaskTypes = new Set(WORKSHEET_CONFIG.defaultEnabledTaskTypes);
+    this.taskPlan = [];
+    this.taskCursor = 0;
   }
 
   init() {
@@ -28,34 +30,40 @@ class WorksheetApp {
   }
 
   renderTaskFilters() {
-    const fragment = document.createDocumentFragment();
+    this.filtersForm.replaceChildren();
 
     Object.values(TASK_TYPES).forEach((taskType) => {
       const label = document.createElement('label');
       label.className = 'task-filter';
-      label.innerHTML = `
-        <input type="checkbox" name="taskType" value="${taskType.id}" checked />
-        <span>${taskType.label}</span>
-      `;
-      fragment.append(label);
-    });
 
-    this.filtersForm.replaceChildren(fragment);
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.name = 'taskType';
+      input.value = taskType.id;
+      input.checked = this.enabledTaskTypes.has(taskType.id);
+
+      const marker = document.createElement('span');
+      marker.className = 'task-filter-marker';
+      marker.textContent = taskType.label;
+
+      label.append(input, marker);
+      this.filtersForm.append(label);
+    });
   }
 
   handleFilterChange(event) {
-    if (event.target.name !== 'taskType') {
+    const input = event.target;
+
+    if (!(input instanceof HTMLInputElement) || input.name !== 'taskType') {
       return;
     }
 
-    const { value, checked } = event.target;
-
-    if (checked) {
-      this.enabledTaskTypes.add(value);
+    if (input.checked) {
+      this.enabledTaskTypes.add(input.value);
     } else if (this.enabledTaskTypes.size > 1) {
-      this.enabledTaskTypes.delete(value);
+      this.enabledTaskTypes.delete(input.value);
     } else {
-      event.target.checked = true;
+      input.checked = true;
       return;
     }
 
@@ -64,10 +72,35 @@ class WorksheetApp {
 
   renderWorksheet() {
     this.gridElement.replaceChildren();
+    this.prepareTaskPlan();
     this.currentWorksheetData = DAYS.map((day) => this.createDayRow(day));
     document.body.classList.remove('show-answers');
     this.answersButton.textContent = 'Показать ответы';
     this.answersButton.classList.remove('btn-primary');
+  }
+
+  prepareTaskPlan() {
+    const totalTasks = DAYS.length * WORKSHEET_CONFIG.tasksPerDay;
+    const enabledTypes = [...this.enabledTaskTypes];
+    const forcedType = this.enabledTaskTypes.has(WORKSHEET_CONFIG.forcedFirstTaskType)
+      ? WORKSHEET_CONFIG.forcedFirstTaskType
+      : enabledTypes[0];
+    const guaranteedTypes = enabledTypes.filter((type) => type !== forcedType);
+    const weightedPool = this.buildWeightedPool(enabledTypes);
+    const plan = [forcedType];
+
+    plan.push(...shuffleArray(guaranteedTypes));
+
+    while (plan.length < totalTasks) {
+      plan.push(getRandomElement(weightedPool));
+    }
+
+    this.taskPlan = plan.slice(0, totalTasks);
+    this.taskCursor = 0;
+  }
+
+  buildWeightedPool(types) {
+    return types.flatMap((type) => Array.from({ length: TASK_TYPES[type].weight }, () => type));
   }
 
   createDayRow(day) {
@@ -93,9 +126,9 @@ class WorksheetApp {
   }
 
   createTask(taskNumber) {
-    const type = taskNumber === 1 && this.enabledTaskTypes.has(WORKSHEET_CONFIG.forcedFirstTaskType)
-      ? WORKSHEET_CONFIG.forcedFirstTaskType
-      : this.getRandomEnabledTaskType();
+    const type = this.taskPlan[this.taskCursor] ?? WORKSHEET_CONFIG.forcedFirstTaskType;
+    this.taskCursor += 1;
+
     const taskDefinition = generatorRegistry[type]();
     const duplicateCount = TASK_TYPES[type].duplicateCount;
 
@@ -110,8 +143,14 @@ class WorksheetApp {
     const stack = document.createElement('div');
     stack.className = 'task-stack';
 
+    const renderedTasks = [];
+
     for (let index = 0; index < duplicateCount; index += 1) {
-      const renderedTask = index === 0 ? taskDefinition : generatorRegistry[type]();
+      const renderedTask = generatorRegistry[type]();
+      renderedTasks.push({
+        answer: renderedTask.answer,
+        html: renderedTask.html.trim(),
+      });
       stack.insertAdjacentHTML('beforeend', renderedTask.html);
     }
 
@@ -120,19 +159,10 @@ class WorksheetApp {
     return {
       element: cell,
       data: {
-        type: taskDefinition.type,
-        answer: taskDefinition.answer,
-        html: taskDefinition.html.trim(),
+        type,
+        instances: renderedTasks,
       },
     };
-  }
-
-  getRandomEnabledTaskType() {
-    const weightedPool = Object.values(TASK_TYPES)
-      .filter(({ id }) => this.enabledTaskTypes.has(id))
-      .flatMap(({ id, weight }) => Array.from({ length: weight }, () => id));
-
-    return getRandomElement(weightedPool);
   }
 
   toggleAnswers() {
