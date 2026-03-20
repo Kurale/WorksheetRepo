@@ -201,98 +201,145 @@ body {
 .task-stack {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
-.compact-problem {
-  display: flex;
+.column-problem {
+  display: inline-flex;
   flex-direction: column;
-  gap: 1px;
-  width: fit-content;
-  max-width: 100%;
-}
-
-.compact-problem--column {
-  min-width: 84px;
-}
-
-.digits-row,
-.digits-grid {
-  display: flex;
-  justify-content: flex-end;
   align-items: flex-end;
-  min-height: 16px;
-  line-height: 1;
+  min-width: 110px;
+  padding: 0 2px;
 }
 
-.digits-row--line,
-.digits-grid--line {
-  border-bottom: 1px solid #111;
-}
-
-.operator-glyph {
-  display: inline-block;
-  min-width: 10px;
-  margin-right: 2px;
-  text-align: left;
-}
-
-.solution-space {
+.column-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 18px;
+  justify-content: end;
+  align-items: end;
   min-height: 18px;
 }
 
-.compact-answer {
-  align-self: flex-end;
-  font-size: 11px;
+.column-row--underline {
+  border-bottom: 2px solid #111;
+}
+
+.column-operator {
+  display: inline-grid;
+  place-items: center;
+  width: 14px;
+  margin-right: 2px;
+}
+
+.column-solution-space {
+  width: 100%;
+  min-height: 18px;
 }
 
 .digit-cell {
   display: inline-grid;
   place-items: center;
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
+  font-size: 16px;
+  font-weight: 400;
 }
 
-.digits-grid--partial {
-  padding-right: calc(var(--digit-shift) * 14px);
+.multiply-problem {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.digits-grid--result {
-  border-top: 1px dashed rgba(17, 24, 39, 0.45);
+.multiply-grid {
+  display: flex;
+  flex-direction: column;
+  width: 122px;
+  min-height: 90px;
+  padding: 4px 6px;
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.45) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.45) 1px, transparent 1px);
+  background-size: 28px 28px;
+  border: 1px solid #cbd5e1;
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
-.division-layout {
+.multiply-row {
   display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: start;
-  column-gap: 3px;
+  grid-auto-flow: column;
+  grid-auto-columns: 26px;
+  justify-content: end;
+  min-height: 28px;
 }
 
-.division-divisor {
-  padding-top: 14px;
+.multiply-row--underline {
+  border-bottom: 2px solid #111;
 }
 
-.division-bracket {
+.multiply-symbol {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  font-size: 18px;
+}
+
+.multiply-workarea {
+  flex: 1;
+}
+
+.division-problem {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 146px;
+  padding: 0 2px;
+}
+
+.division-header,
+.division-body {
   display: grid;
-  grid-template-rows: 14px auto;
-  min-width: 72px;
+  grid-template-columns: auto 3px auto;
+  align-items: end;
+  column-gap: 0;
 }
 
-.division-quotient {
-  border-bottom: 1px solid #111;
+.division-dividend-number,
+.division-quotient-number,
+.division-divisor-number {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
 }
 
-.division-dividend {
-  min-height: 18px;
-  padding-left: 6px;
-  border-top: 1px solid #111;
-  border-left: 1px solid #111;
+.division-header {
+  min-height: 26px;
 }
 
-.division-workline {
-  width: 100%;
-  margin-top: 1px;
-  border-top: 1px dashed rgba(17, 24, 39, 0.45);
+.division-body {
+  min-height: 54px;
+}
+
+.division-bracket-head {
+  align-self: stretch;
+  border-left: 3px solid #111;
+  border-bottom: 3px solid #111;
+}
+
+.division-bracket-stem {
+  align-self: stretch;
+  border-left: 3px solid #111;
+}
+
+.division-solution-space {
+  min-width: 52px;
+  min-height: 100%;
+}
+
+.compact-answer {
+  align-self: flex-end;
+  font-size: 11px;
 }
 
 .comparison-row {

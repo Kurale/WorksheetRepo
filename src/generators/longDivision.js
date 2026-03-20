@@ -9,16 +9,18 @@ export function generateLongDivision() {
     type: 'long_division',
     answer: quotient,
     html: `
-      <div class="compact-problem compact-problem--division">
-        <div class="division-layout">
-          <div class="division-divisor">${divisor}</div>
-          <div class="division-bracket">
-            <div class="division-quotient solution-space"></div>
-            <div class="division-dividend">${dividend}</div>
-          </div>
+      <div class="division-problem">
+        <div class="division-header">
+          <span class="division-dividend-number">${dividend}</span>
+          <span class="division-bracket-head"></span>
+          <span class="division-quotient-number">${quotient}</span>
         </div>
-        <div class="division-workline solution-space"></div>
-        <div class="answer-text compact-answer">Частное: ${quotient}</div>
+        <div class="division-body">
+          <span class="division-divisor-number">${divisor}</span>
+          <span class="division-bracket-stem"></span>
+          <span class="division-solution-space"></span>
+        </div>
+        <div class="answer-text compact-answer">${quotient}</div>
       </div>
     `,
   };

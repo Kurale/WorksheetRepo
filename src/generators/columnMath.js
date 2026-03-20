@@ -1,17 +1,21 @@
 import { getRandomInt } from '../utils/random.js';
 
-function padNumber(value, width) {
-  return String(value).padStart(width, ' ');
+function buildDigitsMarkup(value) {
+  return String(value)
+    .split('')
+    .map((digit) => `<span class="digit-cell">${digit}</span>`)
+    .join('');
 }
 
 function buildCompactColumn(first, second, operator, answer) {
-  const width = Math.max(String(first).length, String(second).length + 1, String(answer).length);
-
   return `
-    <div class="compact-problem compact-problem--column">
-      <div class="digits-row">${padNumber(first, width).replace(/ /g, '&nbsp;')}</div>
-      <div class="digits-row digits-row--line"><span class="operator-glyph">${operator}</span>${padNumber(second, width - 1).replace(/ /g, '&nbsp;')}</div>
-      <div class="solution-space"></div>
+    <div class="column-problem">
+      <div class="column-row column-row--top">${buildDigitsMarkup(first)}</div>
+      <div class="column-row column-row--underline">
+        <span class="column-operator">${operator}</span>
+        ${buildDigitsMarkup(second)}
+      </div>
+      <div class="column-solution-space"></div>
       <div class="answer-text compact-answer">${answer}</div>
     </div>
   `;

@@ -11,13 +11,13 @@ export const TASK_TYPES = {
     id: 'long_multiplication',
     label: 'Умножение в столбик',
     weight: 2,
-    duplicateCount: 1,
+    duplicateCount: 3,
   },
   long_division: {
     id: 'long_division',
     label: 'Деление в столбик',
     weight: 2,
-    duplicateCount: 1,
+    duplicateCount: 2,
   },
   comparison: {
     id: 'comparison',
