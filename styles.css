@@ -1,16 +1,18 @@
 :root {
-  --cell-size: 20px;
+  --cell-size: 18px;
   --grid-color: #d1d5db;
   --page-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   --border-strong: 2px solid #333;
   --border-soft: 1px solid #9ca3af;
   --surface: #ffffff;
   --surface-muted: #e5e7eb;
+  --panel-surface: #ffffff;
   --text-main: #111827;
   --text-muted: #4b5563;
   --accent: #2563eb;
   --accent-hover: #1d4ed8;
   --answer: #ef4444;
+  --sidebar-width: 280px;
 }
 
 * {
@@ -20,35 +22,70 @@
 body {
   margin: 0;
   padding: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f3f4f6;
   color: var(--text-main);
 }
 
-.app-shell {
-  width: min(100%, 1080px);
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 210mm) var(--sidebar-width);
+  justify-content: center;
+  align-items: start;
+  gap: 12px;
 }
 
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 16px 20px;
-  border-radius: 10px;
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 2mm;
   background: var(--surface);
+  box-shadow: var(--page-shadow);
+}
+
+.sidebar {
+  position: sticky;
+  top: 8px;
+}
+
+.controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel-block {
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--panel-surface);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
+.panel-title,
+.panel-subtitle {
+  margin: 0 0 10px;
+}
+
+.panel-title {
+  font-size: 20px;
+}
+
+.panel-subtitle {
+  font-size: 16px;
+}
+
+.controls-group {
+  display: grid;
+  gap: 8px;
+}
+
 .btn {
-  padding: 10px 16px;
+  width: 100%;
+  padding: 9px 12px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   background: var(--surface);
-  font-size: 15px;
+  font-size: 14px;
   cursor: pointer;
   transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
 }
@@ -67,24 +104,28 @@ body {
   background: var(--accent-hover);
 }
 
-.page {
-  width: 210mm;
-  min-height: 297mm;
-  padding: 2.5mm;
-  background: var(--surface);
-  box-shadow: var(--page-shadow);
+.task-type-list {
+  display: grid;
+  gap: 8px;
+}
+
+.task-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
 }
 
 .worksheet-grid {
   display: grid;
   grid-template-rows: repeat(6, 1fr);
-  min-height: calc(297mm - 5mm);
+  min-height: calc(297mm - 4mm);
   border: var(--border-strong);
 }
 
 .day-row {
   display: grid;
-  grid-template-columns: 40px repeat(3, 1fr);
+  grid-template-columns: 28px repeat(3, 1fr);
   border-bottom: var(--border-strong);
 }
 
@@ -96,13 +137,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 0;
+  padding: 4px 0;
   background: var(--surface-muted);
   border-right: var(--border-strong);
   color: var(--text-muted);
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   text-align: center;
   writing-mode: vertical-rl;
   transform: scale(-1);
@@ -111,10 +152,10 @@ body {
 .task-cell {
   position: relative;
   overflow: hidden;
-  padding: 28px 10px 10px;
+  padding: 18px 4px 4px;
   border-right: var(--border-soft);
   font-family: 'Courier New', Courier, monospace;
-  font-size: 18px;
+  font-size: 13px;
   font-weight: 700;
   background-image:
     linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
@@ -128,87 +169,161 @@ body {
 
 .task-number {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 2px;
+  right: 2px;
   z-index: 2;
   display: grid;
   place-items: center;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border: 1px solid #333;
   border-radius: 50%;
   background: var(--surface);
-  font: 12px/1 sans-serif;
+  font: 10px/1 sans-serif;
 }
 
 .task-stack {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
-.math-column {
+.compact-problem {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.compact-problem--column {
+  min-width: 84px;
+}
+
+.digits-row,
+.digits-grid {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  min-height: 16px;
+  line-height: 1;
+}
+
+.digits-row--line,
+.digits-grid--line {
+  border-bottom: 1px solid #111;
+}
+
+.operator-glyph {
   display: inline-block;
-  margin: 0 0 4px;
-  text-align: right;
-  line-height: 1.1;
-  letter-spacing: 6px;
+  min-width: 10px;
+  margin-right: 2px;
+  text-align: left;
 }
 
-.math-column .line {
-  margin-bottom: 2px;
-  border-bottom: 2px solid #000;
+.solution-space {
+  min-height: 18px;
 }
 
-.math-column .operator {
-  float: left;
-  margin-right: 6px;
+.compact-answer {
+  align-self: flex-end;
+  font-size: 11px;
+}
+
+.digit-cell {
+  display: inline-grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+}
+
+.digits-grid--partial {
+  padding-right: calc(var(--digit-shift) * 14px);
+}
+
+.digits-grid--result {
+  border-top: 1px dashed rgba(17, 24, 39, 0.45);
+}
+
+.division-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  column-gap: 3px;
+}
+
+.division-divisor {
+  padding-top: 14px;
+}
+
+.division-bracket {
+  display: grid;
+  grid-template-rows: 14px auto;
+  min-width: 72px;
+}
+
+.division-quotient {
+  border-bottom: 1px solid #111;
+}
+
+.division-dividend {
+  min-height: 18px;
+  padding-left: 6px;
+  border-top: 1px solid #111;
+  border-left: 1px solid #111;
+}
+
+.division-workline {
+  width: 100%;
+  margin-top: 1px;
+  border-top: 1px dashed rgba(17, 24, 39, 0.45);
 }
 
 .comparison-row {
-  margin-bottom: 14px;
+  margin-bottom: 6px;
 }
 
 .box {
   display: inline-grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
-  margin: 0 5px;
+  width: 18px;
+  height: 18px;
+  margin: 0 3px;
   vertical-align: middle;
-  border: 2px solid #333;
+  border: 1px solid #333;
   background: var(--surface);
 }
 
 .word-problem,
-.fraction-task {
-  padding: 6px;
-  border-radius: 6px;
+.fraction-task,
+.equation-task {
+  padding: 2px 3px;
   background: rgba(255, 255, 255, 0.8);
   font-family: sans-serif;
 }
 
-.word-problem {
-  font-size: 14px;
-  line-height: 1.4;
+.word-problem,
+.equation-task {
+  font-size: 11px;
+  line-height: 1.25;
 }
 
 .fraction-task {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
 }
 
 .fraction-answer {
   display: flex;
   flex-direction: column;
-  width: 30px;
+  width: 22px;
   text-align: center;
 }
 
 .fraction-answer .fraction-line,
 .fraction-answer .fraction-placeholder {
-  border-bottom: 2px solid #333;
+  border-bottom: 1px solid #333;
 }
 
 .answer-text {
@@ -232,14 +347,18 @@ body.show-answers .box::after {
     background: #fff;
   }
 
-  .controls {
+  .workspace {
+    display: block;
+  }
+
+  .sidebar {
     display: none;
   }
 
   .page {
     width: 100%;
     min-height: 100vh;
-    padding: 5mm;
+    padding: 3mm;
     box-shadow: none;
   }
 

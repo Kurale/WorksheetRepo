@@ -36,8 +36,10 @@ export function generateEquation() {
     type: 'equation',
     answer,
     html: `
-      <div>${equation}</div>
-      <div>y = <span class="answer-text">${answer}</span></div>
+      <div class="equation-task">
+        <div>${equation}</div>
+        <div>y = <span class="answer-text">${answer}</span></div>
+      </div>
     `,
   };
 }
