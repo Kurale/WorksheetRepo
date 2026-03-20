@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Генератор математических листов</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="toolbar">
+      <div class="toolbar-actions">
+        <button class="btn btn-primary" type="button" data-action="generate">Сгенерировать новый лист</button>
+        <button class="btn" type="button" data-action="print">Печать (A4)</button>
+        <button class="btn" type="button" data-action="answers" data-answers-toggle>Показать ответы</button>
+        <button class="btn" type="button" data-action="export">Скачать JSON</button>
+      </div>
+      <form class="toolbar-filters" data-task-filters aria-label="Типы заданий"></form>
+    </header>
+
+    <main class="page" id="printableArea">
+      <section class="worksheet-grid" id="grid" aria-live="polite"></section>
+    </main>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>

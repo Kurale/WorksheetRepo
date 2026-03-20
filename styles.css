@@ -1,0 +1,280 @@
+:root {
+  --cell-size: 20px;
+  --grid-color: #d1d5db;
+  --surface: #ffffff;
+  --surface-muted: #e5e7eb;
+  --border-strong: 2px solid #333;
+  --border-soft: 1px solid #9ca3af;
+  --answer: #ef4444;
+  --accent: #2563eb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.toolbar {
+  width: min(100%, 1100px);
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.toolbar-actions,
+.toolbar-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.toolbar-filters {
+  margin-top: 12px;
+}
+
+.btn {
+  padding: 9px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.btn-primary {
+  color: #fff;
+  border-color: #1d4ed8;
+  background: var(--accent);
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  background: #f9fafb;
+  font-size: 14px;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 2.5mm;
+  background: var(--surface);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.worksheet-grid {
+  display: grid;
+  grid-template-rows: repeat(6, 1fr);
+  min-height: calc(297mm - 5mm);
+  border: var(--border-strong);
+}
+
+.day-row {
+  display: grid;
+  grid-template-columns: 38px repeat(3, 1fr);
+  border-bottom: var(--border-strong);
+}
+
+.day-row:last-child {
+  border-bottom: none;
+}
+
+.day-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+  border-right: var(--border-strong);
+  background: var(--surface-muted);
+  writing-mode: vertical-rl;
+  transform: scale(-1);
+  font-size: 16px;
+  font-weight: 700;
+  color: #4b5563;
+}
+
+.task-cell {
+  position: relative;
+  overflow: hidden;
+  padding: 22px 8px 8px;
+  border-right: var(--border-soft);
+  background-image:
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: var(--cell-size) var(--cell-size);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.task-cell:last-child {
+  border-right: none;
+}
+
+.task-number {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #333;
+  border-radius: 50%;
+  background: #fff;
+  font: 11px/1 sans-serif;
+}
+
+.task-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.column-example {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 78px;
+  font-size: 18px;
+  line-height: 1.1;
+  letter-spacing: 5px;
+}
+
+.column-line {
+  min-height: 22px;
+}
+
+.column-line--underline {
+  border-bottom: 2px solid #111;
+}
+
+.column-operator {
+  float: left;
+  margin-right: 6px;
+}
+
+.column-line--answer {
+  letter-spacing: normal;
+}
+
+.list-task {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 2px;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.list-row {
+  white-space: nowrap;
+}
+
+.comparison-row {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.box {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin: 0 4px;
+  border: 2px solid #333;
+  background: #fff;
+  vertical-align: middle;
+}
+
+.word-problem,
+.equation-task,
+.fraction-task {
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.8);
+  font-family: sans-serif;
+}
+
+.word-problem,
+.equation-task {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.fraction-task {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fraction-answer {
+  display: flex;
+  flex-direction: column;
+  width: 28px;
+  text-align: center;
+}
+
+.fraction-answer .fraction-line,
+.fraction-answer .fraction-placeholder {
+  border-bottom: 2px solid #333;
+}
+
+.answer-text {
+  display: none;
+  color: var(--answer);
+  font-style: italic;
+}
+
+body.show-answers .answer-text {
+  display: inline;
+}
+
+body.show-answers .box::after {
+  content: attr(data-answer);
+  color: var(--answer);
+}
+
+@media print {
+  body {
+    padding: 0;
+    background: #fff;
+  }
+
+  .toolbar {
+    display: none;
+  }
+
+  .page {
+    width: 100%;
+    min-height: 100vh;
+    padding: 5mm;
+    box-shadow: none;
+  }
+
+  .task-cell {
+    background-image:
+      linear-gradient(to right, #e0e0e0 1px, transparent 1px),
+      linear-gradient(to bottom, #e0e0e0 1px, transparent 1px);
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .day-label {
+    background: #f0f0f0;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
