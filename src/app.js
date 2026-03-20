@@ -2,8 +2,6 @@ import { DAYS, TASK_TYPES, WORKSHEET_CONFIG } from './config.js';
 import { generatorRegistry } from './generators/index.js';
 import { getRandomElement, shuffleArray } from './utils/random.js';
 
-/** @typedef {{type: string, answer: string|number, html: string}} TaskDefinition */
-
 class WorksheetApp {
   constructor({ gridElement, answersButton, filtersForm }) {
     this.gridElement = gridElement;
@@ -34,7 +32,7 @@ class WorksheetApp {
 
     Object.values(TASK_TYPES).forEach((taskType) => {
       const label = document.createElement('label');
-      label.className = 'task-filter';
+      label.className = 'filter-chip';
 
       const input = document.createElement('input');
       input.type = 'checkbox';
@@ -42,11 +40,10 @@ class WorksheetApp {
       input.value = taskType.id;
       input.checked = this.enabledTaskTypes.has(taskType.id);
 
-      const marker = document.createElement('span');
-      marker.className = 'task-filter-marker';
-      marker.textContent = taskType.label;
+      const text = document.createElement('span');
+      text.textContent = taskType.label;
 
-      label.append(input, marker);
+      label.append(input, text);
       this.filtersForm.append(label);
     });
   }
@@ -85,22 +82,15 @@ class WorksheetApp {
     const forcedType = this.enabledTaskTypes.has(WORKSHEET_CONFIG.forcedFirstTaskType)
       ? WORKSHEET_CONFIG.forcedFirstTaskType
       : enabledTypes[0];
-    const guaranteedTypes = enabledTypes.filter((type) => type !== forcedType);
-    const weightedPool = this.buildWeightedPool(enabledTypes);
-    const plan = [forcedType];
+    const weightedPool = enabledTypes.flatMap((type) => Array.from({ length: TASK_TYPES[type].weight }, () => type));
 
-    plan.push(...shuffleArray(guaranteedTypes));
+    this.taskPlan = [forcedType, ...shuffleArray(enabledTypes.filter((type) => type !== forcedType))];
 
-    while (plan.length < totalTasks) {
-      plan.push(getRandomElement(weightedPool));
+    while (this.taskPlan.length < totalTasks) {
+      this.taskPlan.push(getRandomElement(weightedPool));
     }
 
-    this.taskPlan = plan.slice(0, totalTasks);
     this.taskCursor = 0;
-  }
-
-  buildWeightedPool(types) {
-    return types.flatMap((type) => Array.from({ length: TASK_TYPES[type].weight }, () => type));
   }
 
   createDayRow(day) {
@@ -121,7 +111,6 @@ class WorksheetApp {
     }
 
     this.gridElement.append(row);
-
     return { day, tasks };
   }
 
@@ -129,29 +118,22 @@ class WorksheetApp {
     const type = this.taskPlan[this.taskCursor] ?? WORKSHEET_CONFIG.forcedFirstTaskType;
     this.taskCursor += 1;
 
-    const taskDefinition = generatorRegistry[type]();
-    const duplicateCount = TASK_TYPES[type].duplicateCount;
-
     const cell = document.createElement('div');
     cell.className = 'task-cell';
 
-    const numberBadge = document.createElement('div');
-    numberBadge.className = 'task-number';
-    numberBadge.textContent = String(taskNumber);
-    cell.append(numberBadge);
+    const badge = document.createElement('div');
+    badge.className = 'task-number';
+    badge.textContent = String(taskNumber);
+    cell.append(badge);
 
     const stack = document.createElement('div');
     stack.className = 'task-stack';
+    const instances = [];
 
-    const renderedTasks = [];
-
-    for (let index = 0; index < duplicateCount; index += 1) {
-      const renderedTask = generatorRegistry[type]();
-      renderedTasks.push({
-        answer: renderedTask.answer,
-        html: renderedTask.html.trim(),
-      });
-      stack.insertAdjacentHTML('beforeend', renderedTask.html);
+    for (let index = 0; index < TASK_TYPES[type].duplicateCount; index += 1) {
+      const task = generatorRegistry[type]();
+      instances.push({ answer: task.answer, html: task.html.trim() });
+      stack.insertAdjacentHTML('beforeend', task.html);
     }
 
     cell.append(stack);
@@ -160,21 +142,21 @@ class WorksheetApp {
       element: cell,
       data: {
         type,
-        instances: renderedTasks,
+        instances,
       },
     };
   }
 
   toggleAnswers() {
     document.body.classList.toggle('show-answers');
-    const hasAnswers = document.body.classList.contains('show-answers');
-    this.answersButton.textContent = hasAnswers ? 'Скрыть ответы' : 'Показать ответы';
-    this.answersButton.classList.toggle('btn-primary', hasAnswers);
+    const isVisible = document.body.classList.contains('show-answers');
+    this.answersButton.textContent = isVisible ? 'Скрыть ответы' : 'Показать ответы';
+    this.answersButton.classList.toggle('btn-primary', isVisible);
   }
 
   exportJSON() {
-    const data = JSON.stringify(this.currentWorksheetData, null, 2);
-    const url = `data:text/json;charset=utf-8,${encodeURIComponent(data)}`;
+    const payload = JSON.stringify(this.currentWorksheetData, null, 2);
+    const url = `data:text/json;charset=utf-8,${encodeURIComponent(payload)}`;
     const link = document.createElement('a');
     link.href = url;
     link.download = 'worksheet.json';

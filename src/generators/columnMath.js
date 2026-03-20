@@ -1,22 +1,11 @@
 import { getRandomInt } from '../utils/random.js';
 
-function buildDigitsMarkup(value) {
-  return String(value)
-    .split('')
-    .map((digit) => `<span class="digit-cell">${digit}</span>`)
-    .join('');
-}
-
-function buildCompactColumn(first, second, operator, answer) {
+function buildColumnExample(first, second, operator, answer) {
   return `
-    <div class="column-problem">
-      <div class="column-row column-row--top">${buildDigitsMarkup(first)}</div>
-      <div class="column-row column-row--underline">
-        <span class="column-operator">${operator}</span>
-        ${buildDigitsMarkup(second)}
-      </div>
-      <div class="column-solution-space"></div>
-      <div class="answer-text compact-answer">${answer}</div>
+    <div class="column-example">
+      <div class="column-line">${first}</div>
+      <div class="column-line column-line--underline"><span class="column-operator">${operator}</span>${second}</div>
+      <div class="column-line column-line--answer answer-text">${answer}</div>
     </div>
   `;
 }
@@ -30,6 +19,6 @@ export function generateColumnMath() {
   return {
     type: 'column_add_sub',
     answer,
-    html: buildCompactColumn(first, second, isAddition ? '+' : '−', answer),
+    html: buildColumnExample(first, second, isAddition ? '+' : '−', answer),
   };
 }

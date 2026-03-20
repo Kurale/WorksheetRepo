@@ -7,17 +7,17 @@ export const TASK_TYPES = {
     weight: 3,
     duplicateCount: 2,
   },
-  long_multiplication: {
-    id: 'long_multiplication',
-    label: 'Умножение в столбик',
+  multiplication: {
+    id: 'multiplication',
+    label: 'Умножение',
     weight: 2,
-    duplicateCount: 3,
+    duplicateCount: 1,
   },
-  long_division: {
-    id: 'long_division',
-    label: 'Деление в столбик',
+  division: {
+    id: 'division',
+    label: 'Деление',
     weight: 2,
-    duplicateCount: 2,
+    duplicateCount: 1,
   },
   comparison: {
     id: 'comparison',

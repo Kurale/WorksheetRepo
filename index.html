@@ -7,28 +7,19 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div class="workspace">
-      <main class="page" id="printableArea">
-        <section class="worksheet-grid" id="grid" aria-live="polite"></section>
-      </main>
+    <header class="toolbar">
+      <div class="toolbar-actions">
+        <button class="btn btn-primary" type="button" data-action="generate">Сгенерировать новый лист</button>
+        <button class="btn" type="button" data-action="print">Печать (A4)</button>
+        <button class="btn" type="button" data-action="answers" data-answers-toggle>Показать ответы</button>
+        <button class="btn" type="button" data-action="export">Скачать JSON</button>
+      </div>
+      <form class="toolbar-filters" data-task-filters aria-label="Типы заданий"></form>
+    </header>
 
-      <aside class="sidebar controls-panel" aria-label="Панель управления листом">
-        <section class="panel-block">
-          <h1 class="panel-title">Генератор листов</h1>
-          <div class="controls-group">
-            <button class="btn btn-primary" type="button" data-action="generate">Сгенерировать</button>
-            <button class="btn" type="button" data-action="print">Печать (A4)</button>
-            <button class="btn" type="button" data-action="answers" data-answers-toggle>Показать ответы</button>
-            <button class="btn" type="button" data-action="export">Скачать JSON</button>
-          </div>
-        </section>
-
-        <section class="panel-block">
-          <h2 class="panel-subtitle">Типы заданий</h2>
-          <form class="task-type-list" data-task-filters></form>
-        </section>
-      </aside>
-    </div>
+    <main class="page" id="printableArea">
+      <section class="worksheet-grid" id="grid" aria-live="polite"></section>
+    </main>
 
     <script type="module" src="./src/app.js"></script>
   </body>
